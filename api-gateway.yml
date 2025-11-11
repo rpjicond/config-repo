@@ -16,6 +16,20 @@ spring:
       import-check:
         enabled: false
 
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-server:8761/eureka/
+  instance:
+    preferIpAddress: true
+
 logging:
   level:
     org.springframework.cloud.config: INFO
+    org.springframework.cloud.gateway: DEBUG
