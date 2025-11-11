@@ -11,18 +11,10 @@ spring:
         locator:
           enabled: true
           lower-case-service-id: true
-      routes:
-        # Exemplo de rota futura para user-service
-        - id: user-service
-          uri: lb://user-service
-          predicates:
-            - Path=/users/**
-          filters:
-            - StripPrefix=1
     config:
-      uri: http://config-server:8888
+      enabled: true
 
 eureka:
   client:
     service-url:
-      defaultZone: http://eureka-server:8761/eureka
+      defaultZone: http://eureka-server:8761/eureka/
