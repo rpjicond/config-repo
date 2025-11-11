@@ -16,11 +16,20 @@ spring:
       import-check:
         enabled: false
 
-    gateway:
-      discovery:
-        locator:
-          enabled: true
-          lower-case-service-id: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8081/realms/edutrack
+      client:
+        registration:
+          keycloak:
+            client-id: api-gateway
+            client-secret: COLOCA_AQUI_O_CLIENT_SECRET_DO_KEYCLOAK
+            authorization-grant-type: client_credentials
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8081/realms/edutrack
 
 eureka:
   client:
@@ -29,7 +38,10 @@ eureka:
   instance:
     preferIpAddress: true
 
+server:
+  port: 8080
+
 logging:
   level:
-    org.springframework.cloud.config: INFO
     org.springframework.cloud.gateway: DEBUG
+    org.springframework.security: INFO
