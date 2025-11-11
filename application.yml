@@ -1,10 +1,22 @@
 spring:
-  application:
-    name: edutrack
   cloud:
-    discovery:
-      enabled: true
     config:
-      enabled: true
-  config:
-    import: "optional:configserver:http://config-server:8888"
+      server:
+        git:
+          uri: https://github.com/rpjicond/config-repo.git
+  zipkin:
+    base-url: http://zipkin:9411
+  sleuth:
+    sampler:
+      probability: 1.0
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
+logging:
+  level:
+    root: INFO

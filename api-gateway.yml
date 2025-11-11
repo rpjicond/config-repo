@@ -4,28 +4,13 @@ server:
 spring:
   application:
     name: api-gateway
-
+  config:
+    import: optional:configserver:
   cloud:
+    config:
+      uri: http://config-server:8888
     gateway:
       discovery:
         locator:
           enabled: true
           lower-case-service-id: true
-    config:
-      enabled: true
-
-eureka:
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://eureka-server:8761/eureka/
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info,prometheus
-  endpoint:
-    health:
-      show-details: always

@@ -2,6 +2,13 @@ server:
   port: 8083
 
 spring:
+  application:
+    name: identity-service
+  config:
+    import: optional:configserver:
+  cloud:
+    config:
+      uri: http://config-server:8888
   datasource:
     url: jdbc:postgresql://postgres-db:5432/edutrack_db
     username: admin
@@ -12,23 +19,4 @@ spring:
     show-sql: true
     properties:
       hibernate:
-        format_sql: true
-  cloud:
-    config:
-      enabled: true
-
-eureka:
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://eureka-server:8761/eureka/
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info,prometheus
-  endpoint:
-    health:
-      show-details: always
+        dialect: org.hibernate.dialect.PostgreSQLDialect
