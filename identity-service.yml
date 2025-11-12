@@ -17,9 +17,9 @@ spring:
         enabled: false
 
   datasource:
-    url: jdbc:postgresql://postgres-db:5432/edutrack_db
-    username: admin
-    password: admin
+    url: jdbc:postgresql://postgres:5432/edutrack_identity
+    username: postgres
+    password: postgres
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -30,8 +30,12 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
 
-server:
-  port: 8083
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8081/realms/edutrack
+          jwk-set-uri: http://keycloak:8081/realms/edutrack/protocol/openid-connect/certs
 
 eureka:
   client:
@@ -40,8 +44,5 @@ eureka:
   instance:
     preferIpAddress: true
 
-logging:
-  level:
-    org.springframework.cloud.config: INFO
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+server:
+  port: 8083
