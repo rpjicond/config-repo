@@ -35,4 +35,3 @@ server:
 logging:
   level:
     org.springframework.cloud.config: INFO
-    org.springframework.security: DEBUG
