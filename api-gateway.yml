@@ -1,7 +1,11 @@
+# Arquivo: config-repo/api-gateway.yml (VERSÃO ATUALIZADA)
+
 spring:
   application:
     name: api-gateway
 
+  # A seção 'config' geralmente fica no bootstrap.yml, mas se estiver aqui,
+  # não há problema. O importante é que funcione.
   config:
     import: "optional:configserver:"
 
@@ -16,11 +20,19 @@ spring:
       import-check:
         enabled: false
 
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://keycloak:8081/realms/edutrack
+    security:
+      oauth2:
+        resourceserver:
+          jwt:
+            issuer-uri: ${KEYCLOAK_ISSUER_URI:http://keycloak:8081/realms/edutrack}
+            jwk-set-uri: http://keycloak:8081/realms/edutrack/protocol/openid-connect/certs
+
+  # ===============================================================
+  # ADIÇÃO: Configuração de Rastreamento (Zipkin)
+  # ===============================================================
+  zipkin:
+    base-url: http://zipkin:9411/
+
 
 eureka:
   client:
@@ -32,6 +44,21 @@ eureka:
 server:
   port: 8080
 
+# ===============================================================
+# ATUALIZAÇÃO: Configurações do Actuator e Métricas (Prometheus)
+# ===============================================================
+management:
+  endpoints:
+    web:
+      exposure:
+        # ATUALIZADO: Adicionamos 'prometheus' para expor as métricas
+        include: health,info,prometheus
+  # ADIÇÃO: Configuração da amostragem de traces para o Zipkin
+  tracing:
+    sampling:
+      probability: 1.0 # Rastreia 100% das requisições
+
 logging:
   level:
-    org.springframework.cloud.config: INFO
+    org.springframework.cloud.gateway: INFO
+    org.springframework.security: INFO
