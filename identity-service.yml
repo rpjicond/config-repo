@@ -1,11 +1,7 @@
-# Arquivo: config-repo/identity-service.yml (VERSÃO ATUALIZADA)
-
 spring:
   application:
     name: identity-service
 
-  # A seção 'config' geralmente fica no bootstrap.yml, mas se estiver aqui,
-  # não há problema. O importante é que funcione.
   config:
     import: "optional:configserver:"
 
@@ -38,12 +34,9 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://keycloak:8_81/realms/edutrack}
+          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://keycloak:8081/realms/edutrack}
           jwk-set-uri: http://keycloak:8081/realms/edutrack/protocol/openid-connect/certs
 
-  # ===============================================================
-  # ADIÇÃO: Configuração de Rastreamento (Zipkin)
-  # ===============================================================
   zipkin:
     base-url: http://zipkin:9411/
 
@@ -58,10 +51,10 @@ eureka:
 server:
   port: 8083
 
-# ===============================================================
-# ADIÇÃO: Configurações do Actuator e Métricas (Prometheus)
-# ===============================================================
 management:
+  endpoint:
+    health:
+      show-details: always
   endpoints:
     web:
       exposure:
