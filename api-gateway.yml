@@ -27,9 +27,7 @@ spring:
             issuer-uri: ${KEYCLOAK_ISSUER_URI:http://keycloak:8081/realms/edutrack}
             jwk-set-uri: http://keycloak:8081/realms/edutrack/protocol/openid-connect/certs
 
-  # ===============================================================
-  # ADIÇÃO: Configuração de Rastreamento (Zipkin)
-  # ===============================================================
+  # Configuração de Rastreamento (Zipkin)
   zipkin:
     base-url: http://zipkin:9411/
 
@@ -44,16 +42,16 @@ eureka:
 server:
   port: 8080
 
-# ===============================================================
-# ATUALIZAÇÃO: Configurações do Actuator e Métricas (Prometheus)
-# ===============================================================
+# Configurações do Actuator, Métricas e Tracing
 management:
+  # <<< ADICIONADO: Para mostrar detalhes no health check
+  endpoint:
+    health:
+      show-details: always
   endpoints:
     web:
       exposure:
-        # ATUALIZADO: Adicionamos 'prometheus' para expor as métricas
         include: health,info,prometheus
-  # ADIÇÃO: Configuração da amostragem de traces para o Zipkin
   tracing:
     sampling:
       probability: 1.0 # Rastreia 100% das requisições
