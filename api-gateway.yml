@@ -1,11 +1,7 @@
-# Arquivo: config-repo/api-gateway.yml (VERSÃO ATUALIZADA)
-
 spring:
   application:
     name: api-gateway
 
-  # A seção 'config' geralmente fica no bootstrap.yml, mas se estiver aqui,
-  # não há problema. O importante é que funcione.
   config:
     import: "optional:configserver:"
 
@@ -27,9 +23,26 @@ spring:
             issuer-uri: ${KEYCLOAK_ISSUER_URI:http://keycloak:8081/realms/edutrack}
             jwk-set-uri: http://keycloak:8081/realms/edutrack/protocol/openid-connect/certs
 
-  # Configuração de Rastreamento (Zipkin)
+# ================================
+# ZIPKIN (Micrometer + Spring Boot 3)
+# ================================
+management:
   zipkin:
-    base-url: http://zipkin:9411/
+    tracing:
+      endpoint: http://edutrack-zipkin:9411/api/v2/spans
+
+  tracing:
+    sampling:
+      probability: 1.0
+
+  endpoint:
+    health:
+      show-details: always
+
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 
 
 eureka:
@@ -39,22 +52,10 @@ eureka:
   instance:
     preferIpAddress: true
 
+
 server:
   port: 8080
 
-# Configurações do Actuator, Métricas e Tracing
-management:
-  # <<< ADICIONADO: Para mostrar detalhes no health check
-  endpoint:
-    health:
-      show-details: always
-  endpoints:
-    web:
-      exposure:
-        include: health,info,prometheus
-  tracing:
-    sampling:
-      probability: 1.0 # Rastreia 100% das requisições
 
 logging:
   level:
