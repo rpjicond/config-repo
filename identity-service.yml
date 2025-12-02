@@ -2,6 +2,9 @@ server:
   port: 8083
 
 spring:
+  application:
+    name: identity-service
+
   datasource:
     url: jdbc:postgresql://postgres-db:5432/edutrack_db
     username: admin
@@ -26,6 +29,27 @@ spring:
   zipkin:
     base-url: http://zipkin:9411/
 
+  cloud:
+    openfeign:
+      oauth2:
+        enabled: true
+    config:
+      fail-fast: true
+
+# ===============================
+# KEYCLOAK ADMIN CLIENT CONFIG
+# ===============================
+keycloak:
+  admin-client:
+    server-url: http://keycloak:8081
+    realm: edutrack
+    client-id: admin-cli
+    username: admin
+    password: admin
+
+# ===============================
+# SERVICE DISCOVERY
+# ===============================
 eureka:
   client:
     serviceUrl:
@@ -33,6 +57,9 @@ eureka:
   instance:
     preferIpAddress: true
 
+# ===============================
+# ACTUATOR / PROMETHEUS
+# ===============================
 management:
   endpoint:
     health:
@@ -40,7 +67,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,prometheus
+        include: "*"
   tracing:
     sampling:
       probability: 1.0
