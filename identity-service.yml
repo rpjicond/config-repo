@@ -1,21 +1,7 @@
+server:
+  port: 8083
+
 spring:
-  application:
-    name: identity-service
-
-  config:
-    import: "optional:configserver:"
-
-  cloud:
-    config:
-      uri: http://config-server:8888
-      fail-fast: true
-      retry:
-        max-attempts: 10
-        initial-interval: 2000
-        max-interval: 10000
-      import-check:
-        enabled: false
-
   datasource:
     url: jdbc:postgresql://postgres-db:5432/edutrack_db
     username: admin
@@ -34,12 +20,11 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://keycloak:8081/realms/edutrack}
+          issuer-uri: http://keycloak:8081/realms/edutrack
           jwk-set-uri: http://keycloak:8081/realms/edutrack/protocol/openid-connect/certs
 
   zipkin:
     base-url: http://zipkin:9411/
-
 
 eureka:
   client:
@@ -47,9 +32,6 @@ eureka:
       defaultZone: http://eureka-server:8761/eureka/
   instance:
     preferIpAddress: true
-
-server:
-  port: 8083
 
 management:
   endpoint:
