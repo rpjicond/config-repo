@@ -17,6 +17,7 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
 
   security:
     oauth2:
@@ -29,9 +30,8 @@ keycloak:
   admin-client:
     server-url: http://keycloak:8081
     realm: edutrack
-    client-id: admin-cli
-    username: admin
-    password: admin
+    client-id: ${KEYCLOAK_ADMIN_CLIENT_ID:identity-service}
+    client-secret: ${KEYCLOAK_ADMIN_CLIENT_SECRET}
 
 eureka:
   client:
@@ -41,17 +41,13 @@ eureka:
     preferIpAddress: true
 
 management:
-  endpoint:
-    health:
-      show-details: always
   endpoints:
     web:
       exposure:
         include: "*"
+  endpoint:
+    health:
+      show-details: always
   tracing:
     sampling:
       probability: 1.0
-
-logging:
-  level:
-    org.springframework: INFO
