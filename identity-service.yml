@@ -1,12 +1,12 @@
 server:
-  port: 8083
+  port: 8084
 
 spring:
   application:
-    name: identity-service
+    name: student-service
 
   datasource:
-    url: jdbc:postgresql://postgres-db:5432/edutrack_db
+    url: jdbc:postgresql://student-db:5432/student_db
     username: admin
     password: admin
     driver-class-name: org.postgresql.Driver
@@ -19,29 +19,34 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
 
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://keycloak:8081/realms/edutrack
-          jwk-set-uri: http://keycloak:8081/realms/edutrack/protocol/openid-connect/certs
-
   kafka:
     bootstrap-servers: edutrack-kafka:29092
 
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      group-id: student-service
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+      auto-offset-reset: earliest
+
+    listener:
+      ack-mode: batch
 
     topics:
-      user-created: user.created
+      identity-user-created: identity.user.created
 
-keycloak:
-  admin-client:
-    server-url: http://keycloak:8081
-    realm: edutrack
-    client-id: ${KEYCLOAK_ADMIN_CLIENT_ID:identity-service}
-    client-secret: ${KEYCLOAK_ADMIN_CLIENT_SECRET}
+  redis:
+    timeout: 2000ms
+    cluster:
+      nodes:
+        - redis-node-1:6379
+        - redis-node-2:6379
+        - redis-node-3:6379
+        - redis-node-4:6379
+        - redis-node-5:6379
+        - redis-node-6:6379
+    password: EDtrack@2025!
 
 eureka:
   client:
@@ -65,4 +70,4 @@ management:
 logging:
   level:
     org.springframework.kafka: INFO
-    com.educ.identityservice: DEBUG
+    com.educ.student_service: DEBUG
