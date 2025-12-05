@@ -1,12 +1,12 @@
 server:
-  port: 8083
+  port: 8084
 
 spring:
   application:
-    name: identity-service
+    name: student-service
 
   datasource:
-    url: jdbc:postgresql://postgres-db:5432/edutrack_db
+    url: jdbc:postgresql://postgres-db:5432/edutrack_students
     username: admin
     password: admin
     driver-class-name: org.postgresql.Driver
@@ -15,8 +15,7 @@ spring:
     hibernate:
       ddl-auto: update
     properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+      hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
 
   security:
@@ -29,19 +28,16 @@ spring:
   kafka:
     bootstrap-servers: edutrack-kafka:29092
 
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      group-id: student-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
 
     topics:
       user-created: user.created
-
-keycloak:
-  admin-client:
-    server-url: http://keycloak:8081
-    realm: edutrack
-    client-id: ${KEYCLOAK_ADMIN_CLIENT_ID:identity-service}
-    client-secret: ${KEYCLOAK_ADMIN_CLIENT_SECRET}
 
 eureka:
   client:
@@ -49,20 +45,20 @@ eureka:
       defaultZone: http://eureka-server:8761/eureka/
   instance:
     preferIpAddress: true
+    lease-renewal-interval-in-seconds: 10
+    lease-expiration-duration-in-seconds: 30
 
 management:
   endpoints:
     web:
       exposure:
         include: "*"
-  endpoint:
-    health:
-      show-details: always
+
   tracing:
     sampling:
       probability: 1.0
 
 logging:
   level:
+    com.educ.studentservice: DEBUG
     org.springframework.kafka: INFO
-    com.educ.identityservice: DEBUG
