@@ -2,9 +2,6 @@ spring:
   application:
     name: api-gateway
 
-  # ================================
-  # CONFIG SERVER (método moderno em vez de bootstrap.yml)
-  # ================================
   config:
     import: "optional:configserver:"
 
@@ -19,18 +16,6 @@ spring:
       import-check:
         enabled: false
 
-    # ================================
-    # GATEWAY DISCOVERY (via Eureka)
-    # ================================
-    gateway:
-      discovery:
-        locator:
-          enabled: true
-          lower-case-service-id: true
-
-    # ================================
-    # KEYCLOAK / OAUTH2 JWT
-    # ================================
     security:
       oauth2:
         resourceserver:
@@ -38,9 +23,8 @@ spring:
             issuer-uri: ${KEYCLOAK_ISSUER_URI:http://keycloak:8081/realms/edutrack}
             jwk-set-uri: http://keycloak:8081/realms/edutrack/protocol/openid-connect/certs
 
-
 # ================================
-# ZIPKIN (Micrometer)
+# ZIPKIN (Micrometer + Spring Boot 3)
 # ================================
 management:
   zipkin:
@@ -61,30 +45,18 @@ management:
         include: "*"
 
 
-# ================================
-# EUREKA CLIENT
-# ================================
 eureka:
   client:
     serviceUrl:
       defaultZone: http://eureka-server:8761/eureka/
-    register-with-eureka: true
-    fetchRegistry: true
-
   instance:
     preferIpAddress: true
 
 
-# ================================
-# SERVER CONFIG
-# ================================
 server:
   port: 8080
 
 
-# ================================
-# LOGGING
-# ================================
 logging:
   level:
     org.springframework.cloud.gateway: INFO
