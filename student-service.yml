@@ -44,12 +44,12 @@ spring:
       password: EDtrack@2025!
       cluster:
         nodes:
-          - redis-node-1:6379
-          - redis-node-2:6379
-          - redis-node-3:6379
-          - redis-node-4:6379
-          - redis-node-5:6379
-          - redis-node-6:6379
+          - educ-plataforma-redis-node-1-1:6379
+          - educ-plataforma-redis-node-2-1:6379
+          - educ-plataforma-redis-node-3-1:6379
+          - educ-plataforma-redis-node-4-1:6379
+          - educ-plataforma-redis-node-5-1:6379
+          - educ-plataforma-redis-node-6-1:6379
       timeout: 2000ms
 
 eureka:
