@@ -6,7 +6,7 @@ spring:
     name: student-service
 
   datasource:
-    url: jdbc:postgresql://postgres-db:5432/edutrack_students
+    url: jdbc:postgresql://student-db:5432/student_db
     username: admin
     password: admin
     driver-class-name: org.postgresql.Driver
@@ -27,17 +27,30 @@ spring:
 
   kafka:
     bootstrap-servers: edutrack-kafka:29092
-
     consumer:
-      group-id: student-service-group
+      group-id: student-service
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
-        spring.json.trusted.packages: "*"
+        spring.json.trusted.packages: "com.educ.student_service.messaging.event"
+        spring.json.use.type.headers: false
 
     topics:
-      user-created: user.created
+      user-created: identity.user.created
+
+  data:
+    redis:
+      password: EDtrack@2025!
+      cluster:
+        nodes:
+          - redis-node-1:6379
+          - redis-node-2:6379
+          - redis-node-3:6379
+          - redis-node-4:6379
+          - redis-node-5:6379
+          - redis-node-6:6379
+      timeout: 2000ms
 
 eureka:
   client:
@@ -60,5 +73,6 @@ management:
 
 logging:
   level:
-    com.educ.studentservice: DEBUG
+    com.educ.student_service: DEBUG
     org.springframework.kafka: INFO
+    org.springframework.data.redis: INFO
