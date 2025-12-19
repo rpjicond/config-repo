@@ -1,0 +1,84 @@
+server:
+  port: 8082
+
+spring:
+  # --- BANCO DE DADOS UNIFICADO ---
+  datasource:
+    url: jdbc:postgresql://edutrack-postgres:5432/edutrack_db
+    username: admin
+    password: admin
+    driver-class-name: org.postgresql.Driver
+  
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  # --- SEGURANÇA (OAUTH2 + KEYCLOAK) ---
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8081/realms/edutrack
+          jwk-set-uri: http://keycloak:8081/realms/edutrack/protocol/openid-connect/certs
+
+  # --- MENSAGERIA (KAFKA) ---
+  kafka:
+    bootstrap-servers: edutrack-kafka:29092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      group-id: edutrack-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+
+  # --- CACHE (REDIS CLUSTER) ---
+  data:
+    redis:
+      password: EDtrack@2025!
+      cluster:
+        nodes:
+          - redis-node-1:6379
+          - redis-node-2:6379
+          - redis-node-3:6379
+          - redis-node-4:6379
+          - redis-node-5:6379
+          - redis-node-6:6379
+
+# --- SERVICE DISCOVERY ---
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://edutrack-eureka-server:8761/eureka/
+  instance:
+    preferIpAddress: true
+
+# --- MONITORAMENTO E TRACING ---
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+  zipkin:
+    tracing:
+      endpoint: http://edutrack-zipkin:9411/api/v2/spans
+  tracing:
+    sampling:
+      probability: 1.0
+
+# --- LOGS ---
+logging:
+  level:
+    org.springframework.security: INFO
+    org.springframework.kafka: INFO
+    com.educ.school: DEBUG # Altere para o seu pacote principal

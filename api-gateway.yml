@@ -16,6 +16,28 @@ spring:
       import-check:
         enabled: false
 
+    # --- CONFIGURAÇÃO DE ROTAS (DIRECIONADAS AO CORE) ---
+    gateway:
+      default-filters:
+        - TokenRelay # Repassa o token JWT do Keycloak para o Core automaticamente
+      routes:
+        # Tudo que chegar em /identity/... vai para o edutrack-core
+        - id: identity-module
+          uri: lb://EDUTRACK-CORE
+          predicates:
+            - Path=/identity/**
+          filters:
+            - RewritePath=/identity/(?<segment>.*), /$\{segment}
+
+        # Tudo que chegar em /student/... também vai para o edutrack-core
+        - id: student-module
+          uri: lb://EDUTRACK-CORE
+          predicates:
+            - Path=/student/**
+          filters:
+            - RewritePath=/student/(?<segment>.*), /$\{segment}
+
+    # --- SEGURANÇA ---
     security:
       oauth2:
         resourceserver:
@@ -23,9 +45,7 @@ spring:
             issuer-uri: ${KEYCLOAK_ISSUER_URI:http://keycloak:8081/realms/edutrack}
             jwk-set-uri: http://keycloak:8081/realms/edutrack/protocol/openid-connect/certs
 
-# ================================
-# ZIPKIN (Micrometer + Spring Boot 3)
-# ================================
+# --- OBSERVABILIDADE (ZIPKIN / MICROMETER) ---
 management:
   zipkin:
     tracing:
@@ -44,20 +64,20 @@ management:
       exposure:
         include: "*"
 
-
+# --- SERVICE DISCOVERY ---
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://eureka-server:8761/eureka/
+      defaultZone: http://edutrack-eureka-server:8761/eureka/
   instance:
     preferIpAddress: true
-
 
 server:
   port: 8080
 
-
+# --- LOGS ---
 logging:
   level:
     org.springframework.cloud.gateway: INFO
     org.springframework.security: INFO
+    org.springframework.web: INFO
