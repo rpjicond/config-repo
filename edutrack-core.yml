@@ -25,6 +25,12 @@ spring:
           issuer-uri: http://keycloak:8081/realms/edutrack
           jwk-set-uri: http://keycloak:8081/realms/edutrack/protocol/openid-connect/certs
 
+  keycloak:
+    url: http://keycloak:8081
+    realm: edutrack
+    client-id: edutrack-admin
+    client-secret: ${KEYCLOAK_CLIENT_SECRET}
+
   # --- MENSAGERIA (KAFKA) ---
   kafka:
     bootstrap-servers: edutrack-kafka:29092
