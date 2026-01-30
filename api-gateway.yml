@@ -16,28 +16,13 @@ spring:
       import-check:
         enabled: false
 
-    # --- CONFIGURAÇÃO DE ROTAS (DIRECIONADAS AO CORE) ---
     gateway:
-      default-filters:
-        - TokenRelay # Repassa o token JWT do Keycloak para o Core automaticamente
       routes:
-        # Tudo que chegar em /identity/... vai para o edutrack-core
-        - id: identity-module
+        - id: edutrack-core-v1
           uri: lb://EDUTRACK-CORE
           predicates:
-            - Path=/identity/**
-          filters:
-            - RewritePath=/identity/(?<segment>.*), /$\{segment}
-
-        # Tudo que chegar em /student/... também vai para o edutrack-core
-        - id: student-module
-          uri: lb://EDUTRACK-CORE
-          predicates:
-            - Path=/student/**
-          filters:
-            - RewritePath=/student/(?<segment>.*), /$\{segment}
-
-    # --- SEGURANÇA ---
+            - Path=/api/v1/**
+    
     security:
       oauth2:
         resourceserver:
@@ -45,20 +30,17 @@ spring:
             issuer-uri: ${KEYCLOAK_ISSUER_URI:http://keycloak:8081/realms/edutrack}
             jwk-set-uri: http://keycloak:8081/realms/edutrack/protocol/openid-connect/certs
 
-# --- OBSERVABILIDADE (ZIPKIN / MICROMETER) ---
+# --- OBSERVABILIDADE ---
 management:
   zipkin:
     tracing:
       endpoint: http://edutrack-zipkin:9411/api/v2/spans
-
   tracing:
     sampling:
       probability: 1.0
-
   endpoint:
     health:
       show-details: always
-
   endpoints:
     web:
       exposure:
@@ -80,4 +62,5 @@ logging:
   level:
     org.springframework.cloud.gateway: INFO
     org.springframework.security: INFO
-    org.springframework.web: INFO
+    # Adicionei para monitorar a resolução de rotas especificamente
+    org.springframework.cloud.gateway.route.RouteDefinitionRouteLocator: INFO
